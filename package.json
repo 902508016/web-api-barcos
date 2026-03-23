@@ -1,0 +1,16 @@
+{
+  "name": "web-api-barcos",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./app.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.8.0",
+    "body-parser": "^2.2.2",
+    "celebrate": "^15.0.3",
+    "express": "~4.16.1",
+    "oracledb": "^6.10.0",
+    "punycode": "^2.3.1"
+  }
+}
