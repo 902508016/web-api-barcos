@@ -1,0 +1,18 @@
+var express = require('express');
+var router = express.Router();
+var { celebrate, Joi } = require('celebrate');
+const ctr = require('../controllers/barcosController');
+
+// US007 - Como Gestor - Registar Barco ( Requer ID do barco, nome e cor )
+router.post('/',
+    celebrate({
+        body: Joi.object({
+            id_barco: Joi.number().required(),
+            nome: Joi.string().min(1).required(),
+            cor: Joi.string().min(1).required() 
+        })
+    }),
+    ctr.createBarco
+);
+
+module.exports = router;

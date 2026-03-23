@@ -12,8 +12,12 @@ var mWare=require('./middleware');
 app.use(mWare);
 
 // Routes ================================================
+// ================ MARINHEIROS ENDPOINTS ================
 var marinheirosRoute = require('./routes/marinheirosRoute');
 app.use('/api/marinheiros', marinheirosRoute);
+// ================ BARCOS ENDPOINTS ====================
+var barcosRoute = require('./routes/barcosRoute');
+app.use('/api/barcos', barcosRoute);
 
 // 404
 app.get(/.*/, (req, res) => {
