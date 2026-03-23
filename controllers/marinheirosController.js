@@ -96,4 +96,25 @@ exports.getMarinheiroById = async function (req, res) {
 };
 
 // US005 - Como Gestor - Atualizar classificação do marinheiro
+
+exports.updateMarinheiroClassificacao = async function (req, res) {
+    try {
+        const connection = await db.connect();
+
+        var result = await connection.execute(
+            `UPDATE MARINHEIROS SET CLASSIFICACAO = :8 WHERE ID_MARINHEIRO = :100`,
+            [req.body.classificacao, req.params.id],
+            { autoCommit: true }
+        );
+
+        if (result.changes === 0)
+            return res.status(404).json({ error: 'Marinheiro não encontrado.' });   
+
+        res.json({ message: 'Classificação do marinheiro atualizada com sucesso.' });
+
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }   
+};
+
 // US006 - Como Gestor - Eliminar marinheiro se não estiver associado a nenhum barco
