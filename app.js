@@ -11,6 +11,15 @@ app.use(bodyParser.json());
 var mWare=require('./middleware');
 app.use(mWare);
 
+// Routes ================================================
+var marinheirosRoute = require('./routes/marinheirosRoute');
+app.use('/api/marinheiros', marinheirosRoute);
+
+// 404
+app.get(/.*/, (req, res) => {
+    res.status(404).send('Endpoint not found.');
+});
+
 // Server ================================================
 var port = 8080;
 app.listen(port);
