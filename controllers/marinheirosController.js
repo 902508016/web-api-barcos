@@ -74,7 +74,26 @@ exports.getMarinheirosByClassificacao = async function (req, res) {
     }
 };
 
-
 // US004 - Como Gestor - Listar Marinheiro por ID
+
+exports.getMarinheiroById = async function (req, res) {
+    try {
+        const connection = await db.connect();
+
+        var result = await connection.execute(
+            `SELECT * FROM MARINHEIROS WHERE ID_MARINHEIRO = :100`,
+            [req.params.id]
+        );
+
+        if (!result.rows || result.rows.length === 0)
+            return res.status(404).json({ error: 'Marinheiro não encontrado.' });
+
+        res.json(result.rows);
+
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
 // US005 - Como Gestor - Atualizar classificação do marinheiro
 // US006 - Como Gestor - Eliminar marinheiro se não estiver associado a nenhum barco

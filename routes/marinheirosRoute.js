@@ -10,7 +10,7 @@ router.get('/', ctr.getAllMarinheiros);
 // US003 - Como Gestor - Listar Marinheiro com determinada classificação
 router.get('/classificacao', ctr.getMarinheirosByClassificacao);
 // US004 - Como Gestor - Listar Marinheiro por ID
-
+router.get('/:id', ctr.getMarinheiroById);
 // US005 - Como Gestor - Atualizar classificação do marinheiro
 
 // US006 - Como Gestor - Eliminar marinheiro se não estiver associado a nenhum barco
