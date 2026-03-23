@@ -5,6 +5,8 @@ const ctr = require('../controllers/marinheirosController');
 
 // US001 - Como Gestor - Criar Marinheiro
 router.post('/', ctr.createMarinheiro);
+// US002 - Como Gestor - Listar Marinheiros
+router.get('/', ctr.getAllMarinheiros);
 // US003 - Como Gestor - Listar Marinheiro com determinada classificação
 
 // US004 - Como Gestor - Listar Marinheiro por ID
