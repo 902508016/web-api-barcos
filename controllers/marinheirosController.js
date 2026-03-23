@@ -118,3 +118,33 @@ exports.updateMarinheiroClassificacao = async function (req, res) {
 };
 
 // US006 - Como Gestor - Eliminar marinheiro se não estiver associado a nenhum barco
+
+exports.deleteMarinheiro = async function (req, res) {
+    try {
+        const connection = await db.connect();
+
+        // 1. Verificar se tem reservas
+        var reservas = await connection.execute(
+            `SELECT * FROM RESERVAS WHERE ID_MARINHEIRO = :1`,
+            [req.params.id]
+        );
+
+        if (reservas.rows.length > 0)
+            return res.status(400).json({ error: 'Marinheiro tem reservas associadas.' });
+
+        // 2. Eliminar marinheiro
+        var result = await connection.execute(
+            `DELETE FROM MARINHEIROS WHERE ID_MARINHEIRO = :1`,
+            [req.params.id],
+            { autoCommit: true }
+        );
+
+        if (result.rowsAffected !== 1)
+            return res.status(404).json({ error: 'Marinheiro não encontrado.' });
+
+        res.json({ message: 'Marinheiro eliminado com sucesso.' });
+
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};

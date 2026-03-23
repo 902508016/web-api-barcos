@@ -15,8 +15,10 @@ router.post('/',
     }),
     ctr.createMarinheiro
 );
+
 // US002 - Como Gestor - Listar Marinheiros
 router.get('/', ctr.getAllMarinheiros);
+
 // US003 - Como Gestor - Listar Marinheiro com determinada classificação
 router.get('/classificacao',
     celebrate({
@@ -26,8 +28,10 @@ router.get('/classificacao',
     }),
     ctr.getMarinheirosByClassificacao
 );
+
 // US004 - Como Gestor - Listar Marinheiro por ID
 router.get('/:id', ctr.getMarinheiroById);
+
 // US005 - Como Gestor - Atualizar classificação do marinheiro
 router.patch('/:id',
     celebrate({
@@ -37,7 +41,9 @@ router.patch('/:id',
     }),
     ctr.updateMarinheiroClassificacao
 );
+
 // US006 - Como Gestor - Eliminar marinheiro se não estiver associado a nenhum barco
+router.delete('/:id', ctr.deleteMarinheiro);
 
 
 module.exports = router;
