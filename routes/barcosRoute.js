@@ -18,5 +18,7 @@ router.post('/',
 // US008 - Como Gestor - Listar Barcos Registados no Sistema
 router.get('/', ctr.getAllBarcos);
 
+// US009 - Como Marinheiro - Listar Barcos Disponiveis para Reserva
+router.get('/disponiveis', ctr.getBarcosDisponiveis);
 
 module.exports = router;
