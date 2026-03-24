@@ -6,12 +6,13 @@ const Reserva = require('../models/reserva');
 exports.createReserva = async function (req, res) {
     try {
         const connection = await db.connect();  
-
+        
         var nova = new Reserva(
             req.body.id_marinheiro,
             req.body.id_barco,
             req.body.data
         );
+       
         var result = await connection.execute(
             `INSERT INTO RESERVAS (ID_MARINHEIRO, ID_BARCO, DATA)
              VALUES (:1, :2, :3)`,
@@ -22,11 +23,13 @@ exports.createReserva = async function (req, res) {
             ],
             { autoCommit: true }
         );      
+        
         if (result.changes === 0) {
             return res.status(400).json({ error: "Não foi possível criar a reserva." });
         }
-
+        
         res.status(201).json({ message: "Reserva criada com sucesso." });
+    
     } catch (err) {
         res.status(500).json({ error: err.message });
     }   
@@ -42,12 +45,13 @@ exports.listReservasByMarinheiro = async function (req, res) {
             `SELECT * FROM RESERVAS WHERE ID_MARINHEIRO = :id_marinheiro`,
             [req.params.id_marinheiro]
         );
-
+        
         if (!result.rows || result.rows.length === 0) {
             return res.status(404).json({ error: "Nenhuma reserva encontrada para este marinheiro." });
         }
+        
         res.status(200).json(result.rows);
-
+    
     } catch (err) {
         res.status(500).json({ error: err.message });
     }   
