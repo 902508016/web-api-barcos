@@ -18,6 +18,9 @@ app.use('/api/marinheiros', marinheirosRoute);
 // ================ BARCOS ENDPOINTS ====================
 var barcosRoute = require('./routes/barcosRoute');
 app.use('/api/barcos', barcosRoute);
+// ================ RESERVAS ENDPOINTS ====================
+var reservasRoute = require('./routes/reservasRoute');
+app.use('/api/reservas', reservasRoute);
 
 // 404
 app.get(/.*/, (req, res) => {
