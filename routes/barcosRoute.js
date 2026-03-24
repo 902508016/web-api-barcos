@@ -15,4 +15,8 @@ router.post('/',
     ctr.createBarco
 );
 
+// US008 - Como Gestor - Listar Barcos Registados no Sistema
+router.get('/', ctr.getAllBarcos);
+
+
 module.exports = router;
