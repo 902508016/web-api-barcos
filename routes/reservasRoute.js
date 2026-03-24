@@ -15,4 +15,7 @@ router.post('/',
     }), ctr.createReserva
 );
 
+// US011 - Como Marinheiro - Listar Barcos por mim Registados
+router.get('/marinheiro/:id_marinheiro', ctr.listReservasByMarinheiro);
+
 module.exports = router;

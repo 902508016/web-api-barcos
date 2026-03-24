@@ -32,3 +32,23 @@ exports.createReserva = async function (req, res) {
     }   
 };
 
+// US011 - Como Marinheiro - Listar Barcos por mim Registados
+
+exports.listReservasByMarinheiro = async function (req, res) {
+    try {   
+        const connection = await db.connect();
+        
+        var result = await connection.execute(
+            `SELECT * FROM RESERVAS WHERE ID_MARINHEIRO = :id_marinheiro`,
+            [req.params.id_marinheiro]
+        );
+
+        if (!result.rows || result.rows.length === 0) {
+            return res.status(404).json({ error: "Nenhuma reserva encontrada para este marinheiro." });
+        }
+        res.status(200).json(result.rows);
+
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }   
+};
