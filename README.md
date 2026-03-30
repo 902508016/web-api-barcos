@@ -22,12 +22,12 @@ ________________________________________________________________________________
 ## Estrutura do projeto
 
 ```
-api-barcos/
+web-api-barcos/
 │
 ├── controllers/
-├── routes/
-├── models/
 ├── database/
+├── models/
+├── routes/
 ├── app.js
 ├── middleware.js
 ├── package.json
