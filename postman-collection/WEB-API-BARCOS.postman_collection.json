@@ -1,11 +1,10 @@
 {
   "info": {
-    "_postman_id": "c9060d69-1d6f-4434-9b00-2d4733906358",
-    "name": "API-Barcos",
-    "description": "### Welcome to Postman! This is your first collection. \n\nCollections are your starting point for building and testing APIs. You can use this one to:\n\n• Group related requests\n• Test your API in real-world scenarios\n• Document and share your requests\n\nUpdate the name and overview whenever you’re ready to make it yours.\n\n[Learn more about Postman Collections.](https://learning.postman.com/docs/collections/collections-overview/)",
+    "_postman_id": "d57dfe09-6d7d-4ff0-b8f3-e38567f6026a",
+    "name": "WEB-API-BARCOS",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "52730829",
-    "_collection_link": "https://go.postman.co/collection/52730829-c9060d69-1d6f-4434-9b00-2d4733906358?source=collection_link"
+    "_collection_link": "https://go.postman.co/collection/52730829-d57dfe09-6d7d-4ff0-b8f3-e38567f6026a?source=collection_link"
   },
   "item": [
     {
@@ -13,28 +12,12 @@
       "item": [
         {
           "name": "US001 - Criar Marinheiro",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test(\"Successful POST request\", function () {",
-                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
-                  "});",
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
           "request": {
             "method": "POST",
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"id_marinheiro\": 100,\n  \"nome\": \"Catarina\",\n  \"classificacao\": 5,\n  \"idade\": 31\n}",
+              "raw": "{\r\n  \"id_marinheiro\": 100,\r\n  \"nome\": \"Catarina\",\r\n  \"classificacao\": 5,\r\n  \"idade\": 31\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -42,7 +25,7 @@
               }
             },
             "url": {
-              "raw": "http://127.0.0.1:3001/api/marinheiros",
+              "raw": "http://127.0.0.1:8080/api/marinheiros",
               "protocol": "http",
               "host": [
                 "127",
@@ -50,47 +33,22 @@
                 "0",
                 "1"
               ],
-              "port": "3001",
+              "port": "8080",
               "path": [
                 "api",
                 "marinheiros"
               ]
-            },
-            "description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+            }
           },
           "response": []
         },
         {
           "name": "US002 - Listar Marinheiros",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});"
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
           "request": {
             "method": "GET",
             "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
             "url": {
-              "raw": "http://127.0.0.1:3001/api/marinheiros",
+              "raw": "http://127.0.0.1:8080/api/marinheiros",
               "protocol": "http",
               "host": [
                 "127",
@@ -98,13 +56,12 @@
                 "0",
                 "1"
               ],
-              "port": "3001",
+              "port": "8080",
               "path": [
                 "api",
                 "marinheiros"
               ]
-            },
-            "description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+            }
           },
           "response": []
         },
@@ -114,7 +71,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://127.0.0.1:3001/api/marinheiros/filtro?classificacao=7",
+              "raw": "http://127.0.0.1:8080/api/marinheiros/classificacao?classificacao=5",
               "protocol": "http",
               "host": [
                 "127",
@@ -122,16 +79,16 @@
                 "0",
                 "1"
               ],
-              "port": "3001",
+              "port": "8080",
               "path": [
                 "api",
                 "marinheiros",
-                "filtro"
+                "classificacao"
               ],
               "query": [
                 {
                   "key": "classificacao",
-                  "value": "7"
+                  "value": "5"
                 }
               ]
             }
@@ -144,7 +101,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://127.0.0.1:3001/api/marinheiros/100",
+              "raw": "http://127.0.0.1:8080/api/marinheiros/100",
               "protocol": "http",
               "host": [
                 "127",
@@ -152,7 +109,7 @@
                 "0",
                 "1"
               ],
-              "port": "3001",
+              "port": "8080",
               "path": [
                 "api",
                 "marinheiros",
@@ -163,13 +120,13 @@
           "response": []
         },
         {
-          "name": "US005 - Atualizar classificação Marinheiro",
+          "name": "US005 - Atualizar Classificação Marinheiro",
           "request": {
-            "method": "PUT",
+            "method": "PATCH",
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"classificacao\": 10\r\n}",
+              "raw": "{\r\n  \"classificacao\": 8\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -177,7 +134,7 @@
               }
             },
             "url": {
-              "raw": "http://127.0.0.1:3001/api/marinheiros/100",
+              "raw": "http://127.0.0.1:8080/api/marinheiros/100",
               "protocol": "http",
               "host": [
                 "127",
@@ -185,7 +142,7 @@
                 "0",
                 "1"
               ],
-              "port": "3001",
+              "port": "8080",
               "path": [
                 "api",
                 "marinheiros",
@@ -201,15 +158,12 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "http://127.0.0.1:3001/api/marinheiros/100",
+              "raw": "http://localhost:8080/api/marinheiros/100",
               "protocol": "http",
               "host": [
-                "127",
-                "0",
-                "0",
-                "1"
+                "localhost"
               ],
-              "port": "3001",
+              "port": "8080",
               "path": [
                 "api",
                 "marinheiros",
@@ -225,13 +179,13 @@
       "name": "Barcos (Gestor)",
       "item": [
         {
-          "name": "US007 - Criar Barco",
+          "name": "US007 - Registar Barco",
           "request": {
             "method": "POST",
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"id_barco\": 105,\r\n  \"nome\": \"Opalite\",\r\n  \"cor\": \"laranja\"\r\n}",
+              "raw": "{\r\n  \"id_barco\": 105,\r\n  \"nome\": \"Ophelia\",\r\n  \"cor\": \"Laranja\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -239,7 +193,7 @@
               }
             },
             "url": {
-              "raw": "http://127.0.0.1:3001/api/barcos",
+              "raw": "http://127.0.0.1:8080/api/barcos",
               "protocol": "http",
               "host": [
                 "127",
@@ -247,7 +201,7 @@
                 "0",
                 "1"
               ],
-              "port": "3001",
+              "port": "8080",
               "path": [
                 "api",
                 "barcos"
@@ -257,12 +211,12 @@
           "response": []
         },
         {
-          "name": "US008 - Listar Barcos",
+          "name": "US008 - Listar Barcos Registados no Sistema",
           "request": {
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://127.0.0.1:3001/api/barcos",
+              "raw": "http://127.0.0.1:8080/api/barcos",
               "protocol": "http",
               "host": [
                 "127",
@@ -270,7 +224,7 @@
                 "0",
                 "1"
               ],
-              "port": "3001",
+              "port": "8080",
               "path": [
                 "api",
                 "barcos"
@@ -280,12 +234,12 @@
           "response": []
         },
         {
-          "name": "US009 - Listar Barcos disponiveis",
+          "name": "US009 - Listar Barcos Disponíveis para Reserva",
           "request": {
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://127.0.0.1:3001/api/barcos/disponiveis",
+              "raw": "http://127.0.0.1:8080/api/barcos/disponiveis",
               "protocol": "http",
               "host": [
                 "127",
@@ -293,7 +247,7 @@
                 "0",
                 "1"
               ],
-              "port": "3001",
+              "port": "8080",
               "path": [
                 "api",
                 "barcos",
@@ -307,7 +261,88 @@
     },
     {
       "name": "Reservas (Marinheiro)",
-      "item": []
+      "item": [
+        {
+          "name": "US010 - Criar Reserva",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"id_marinheiro\": 22,\r\n    \"id_barco\": 105,\r\n    \"data\": \"2026-03-25\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/reservas",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "reservas"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "US011 - Listar Reservas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/reservas/marinheiro/22",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "reservas",
+                "marinheiro",
+                "22"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "US012 - Cancelar Reserva Futura",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"id_marinheiro\": 22,\r\n  \"id_barco\": 105,\r\n  \"data\": \"2026-03-25\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/reservas",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "reservas"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
     }
   ]
 }
