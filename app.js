@@ -11,6 +11,10 @@ app.use(bodyParser.json());
 var mWare=require('./middleware');
 app.use(mWare);
 
+//Enable CORS for all routes
+const cors = require('cors');
+app.use(cors());
+
 // Routes ================================================
 // ================ MARINHEIROS ENDPOINTS ================
 var marinheirosRoute = require('./routes/marinheirosRoute');

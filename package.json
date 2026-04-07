@@ -9,6 +9,7 @@
     "better-sqlite3": "^12.8.0",
     "body-parser": "^2.2.2",
     "celebrate": "^15.0.3",
+    "cors": "^2.8.6",
     "express": "~4.16.1",
     "oracledb": "^6.10.0",
     "punycode": "^2.3.1"
