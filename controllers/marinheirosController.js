@@ -16,7 +16,7 @@ exports.createMarinheiro = async function (req, res) {
         
         var result = await connection.execute(
             `INSERT INTO MARINHEIROS (ID_MARINHEIRO, NOME, CLASSIFICACAO, IDADE)
-             VALUES (:1, :2, :3, :4)`,
+             VALUES (:id, :nome, :classificacao, :idade)`,
             [
                 novo.id_marinheiro,
                 novo.nome,
@@ -60,8 +60,8 @@ exports.getMarinheirosByClassificacao = async function (req, res) {
         const connection = await db.connect();
         
         var result = await connection.execute(
-            `SELECT * FROM MARINHEIROS WHERE CLASSIFICACAO = :5`,    
-            [req.query.classificacao]
+            `SELECT * FROM MARINHEIROS WHERE CLASSIFICACAO = :classificacao`,    
+            {classificacao: req.query.classificacao}
         );
         
         if (!result.rows || result.rows.length === 0)
@@ -82,7 +82,7 @@ exports.getMarinheiroById = async function (req, res) {
         
         var result = await connection.execute(
             `SELECT * FROM MARINHEIROS WHERE ID_MARINHEIRO = :id`,
-            [req.params.id]
+            {id: req.params.id}
         );
         
         if (!result.rows || result.rows.length === 0)
@@ -102,12 +102,12 @@ exports.updateMarinheiroClassificacao = async function (req, res) {
         const connection = await db.connect();
         
         var result = await connection.execute(
-            `UPDATE MARINHEIROS SET CLASSIFICACAO = :8 WHERE ID_MARINHEIRO = :100`,
-            [req.body.classificacao, req.params.id],
+            `UPDATE MARINHEIROS SET CLASSIFICACAO = :classificacao WHERE ID_MARINHEIRO = :id`,
+            {classificacao: req.body.classificacao, id: req.params.id},
             { autoCommit: true }
         );
         
-        if (result.changes === 0)
+        if (result.rowsAffected === 0)
             return res.status(404).json({ error: 'Marinheiro não encontrado.' });   
         
         res.json({ message: 'Classificação do marinheiro atualizada com sucesso.' });
@@ -125,8 +125,8 @@ exports.deleteMarinheiro = async function (req, res) {
         
         // 1. Verificar se tem reservas
         var reservas = await connection.execute(
-            `SELECT * FROM RESERVAS WHERE ID_MARINHEIRO = :1`,
-            [req.params.id]
+            `SELECT * FROM RESERVAS WHERE ID_MARINHEIRO = :id`,
+            {id: req.params.id}
         );
         
         if (reservas.rows.length > 0)
@@ -134,8 +134,8 @@ exports.deleteMarinheiro = async function (req, res) {
         
         // 2. Eliminar marinheiro
         var result = await connection.execute(
-            `DELETE FROM MARINHEIROS WHERE ID_MARINHEIRO = :1`,
-            [req.params.id],
+            `DELETE FROM MARINHEIROS WHERE ID_MARINHEIRO = :id`,
+            {id: req.params.id},
             { autoCommit: true }
         );
         
