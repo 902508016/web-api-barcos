@@ -81,7 +81,7 @@ exports.getMarinheiroById = async function (req, res) {
         const connection = await db.connect();
         
         var result = await connection.execute(
-            `SELECT * FROM MARINHEIROS WHERE ID_MARINHEIRO = :100`,
+            `SELECT * FROM MARINHEIROS WHERE ID_MARINHEIRO = :id`,
             [req.params.id]
         );
         
