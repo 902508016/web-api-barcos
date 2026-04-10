@@ -6,13 +6,14 @@ const ctr = require('../controllers/reservasController');
 // US010 - Como Marinheiro - Reservar Barco ( Requer ID do marinheiro, ID do barco e data da reserva )
 
 router.post('/',
-    celebrate({
-        body: Joi.object({
-            id_marinheiro: Joi.number().required(),
-            id_barco: Joi.number().required(),
-            data: Joi.date().required()
-        })
-    }), ctr.createReserva
+  celebrate({
+    body: Joi.object({
+      id_marinheiro: Joi.number().integer().required(),
+      id_barco: Joi.number().integer().required(),
+      data: Joi.string().required() // aceita YYYY-MM-DD ou DD/MM/YYYY
+    })
+  }),
+  ctr.createReserva
 );
 
 // US011 - Como Marinheiro - Listar Barcos por mim Registados
@@ -24,7 +25,7 @@ router.delete('/',
         body: Joi.object({
             id_marinheiro: Joi.number().required(),
             id_barco: Joi.number().required(),
-            data: Joi.string().isoDate().required()
+            data: Joi.string().isoDate().required() //iso usado para forçar o string da data
         })
     }), ctr.cancelReserva
 );
