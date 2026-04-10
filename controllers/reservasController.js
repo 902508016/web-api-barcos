@@ -25,16 +25,16 @@ exports.createReserva = async function (req, res) {
             return res.status(400).json({ error: 'Só é possível reservar para datas futuras.' });
         }
 
-        // Verificar se o barco já está reservado nessa data
+        // Verificar se o barco já está reservado nessa data - uso 1 porque só quero verificar se existe, não preciso de todos*
 
         const checkBarco = await connection.execute( 
-            `SELECT * FROM RESERVAS WHERE ID_MARINHEIRO = :id_marinheiro
-            AND ID_BARCO: id_barco
+            `SELECT 1 FROM RESERVAS 
+            WHERE ID_BARCO = :id_barco
             AND TRUNC(DATA) = TRUNC(:data)`, 
             params
         );
 
-        if (checkDuplicado.rows.length > 0) {
+        if (checkBarco.rows.length > 0) {
             return res.status(400).json({ error: 'Já reservaste este barco para essa data.' });
         };
 
@@ -52,6 +52,9 @@ exports.createReserva = async function (req, res) {
         res.status(201).json({ message: "Reserva criada com sucesso." });
     
     } catch (err) {
+        if (err.message.includes('ORA-02291')) {
+      return res.status(400).json({ error: 'Marinheiro ou barco não existe.' });
+        }
         res.status(500).json({ error: err.message });
     }   
 };
