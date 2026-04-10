@@ -13,14 +13,35 @@ exports.createReserva = async function (req, res) {
             req.body.data
         );
        
+        const params = {
+            id_marinheiro: nova.id_marinheiro,
+            id_barco: nova.id_barco,
+            data: new Date(nova.data)
+        };
+
+        // Validar Reserva para data futura
+
+        if (params.data <= new Date()) {
+            return res.status(400).json({ error: 'Só é possível reservar para datas futuras.' });
+        }
+
+        // Verificar se o barco já está reservado nessa data
+
+        const checkBarco = await connection.execute( 
+            `SELECT * FROM RESERVAS WHERE ID_MARINHEIRO = :id_marinheiro
+            AND ID_BARCO: id_barco
+            AND TRUNC(DATA) = TRUNC(:data)`, 
+            params
+        );
+
+        if (checkDuplicado.rows.length > 0) {
+            return res.status(400).json({ error: 'Já reservaste este barco para essa data.' });
+        };
+
         var result = await connection.execute(
             `INSERT INTO RESERVAS (ID_MARINHEIRO, ID_BARCO, DATA)
              VALUES (:id_marinheiro, :id_barco, :data)`, 
-            [
-                nova.id_marinheiro,
-                nova.id_barco,  
-                new Date(nova.data)
-            ],
+            params,
             { autoCommit: true }
         );      
         
