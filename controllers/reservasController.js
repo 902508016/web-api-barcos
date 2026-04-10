@@ -15,7 +15,7 @@ exports.createReserva = async function (req, res) {
        
         var result = await connection.execute(
             `INSERT INTO RESERVAS (ID_MARINHEIRO, ID_BARCO, DATA)
-             VALUES (:1, :2, :3)`,
+             VALUES (:id_marinheiro, :id_barco, :data)`, 
             [
                 nova.id_marinheiro,
                 nova.id_barco,  
@@ -24,7 +24,7 @@ exports.createReserva = async function (req, res) {
             { autoCommit: true }
         );      
         
-        if (result.changes === 0) {
+        if (result.rowsAffected === 0) {
             return res.status(400).json({ error: "Não foi possível criar a reserva." });
         }
         
@@ -43,7 +43,7 @@ exports.listReservasByMarinheiro = async function (req, res) {
         
         var result = await connection.execute(
             `SELECT * FROM RESERVAS WHERE ID_MARINHEIRO = :id_marinheiro`,
-            [req.params.id_marinheiro]
+            {id_marinheiro: req.params.id_marinheiro}
         );
         
         if (!result.rows || result.rows.length === 0) {
@@ -62,19 +62,20 @@ exports.listReservasByMarinheiro = async function (req, res) {
 exports.cancelReserva = async function (req, res) {
     try {
         const connection = await db.connect();
+        const params = {
+            id_marinheiro: req.body.id_marinheiro,
+            id_barco: req.body.id_barco,
+            data: new Date(req.body.data)
+        };
 
          // 1. Verificar se a reserva existe e é futura
         var reserva = await connection.execute(
             `SELECT * FROM RESERVAS 
-             WHERE ID_MARINHEIRO = :1 
-             AND ID_BARCO = :2 
-             AND TRUNC(DATA) = TRUNC(:3)
-             AND DATA > SYSDATE`,
-
-            [   req.body.id_marinheiro, 
-                req.body.id_barco, 
-                new Date(req.body.data)
-            ]
+             WHERE ID_MARINHEIRO = id_marinheiro
+             AND ID_BARCO = id_barco
+             AND TRUNC(DATA) = TRUNC(:data)
+             AND DATA > SYSDATE`, 
+             params
         );
 
         if (!reserva.rows || reserva.rows.length === 0)
@@ -83,15 +84,11 @@ exports.cancelReserva = async function (req, res) {
         // 2. Eliminar reserva
         var result = await connection.execute(
             `DELETE FROM RESERVAS 
-             WHERE ID_MARINHEIRO = :1 
-             AND ID_BARCO = :2
-             AND TRUNC(DATA) = TRUNC(:3)
+             WHERE ID_MARINHEIRO = :id_marinheiro
+             AND ID_BARCO = :id_barco
+             AND TRUNC(DATA) = TRUNC(:data)
              AND DATA > SYSDATE`,
-
-            [   req.body.id_marinheiro, 
-                req.body.id_barco, 
-                new Date(req.body.data)
-            ],
+             params,
             
             { autoCommit: true }
         );
