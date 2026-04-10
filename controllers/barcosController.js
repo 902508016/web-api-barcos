@@ -15,7 +15,7 @@ exports.createBarco = async function (req, res) {
 
         var result = await connection.execute(
             `INSERT INTO BARCOS (ID_BARCO, NOME, COR)
-             VALUES (:1, :2, :3)`,  
+             VALUES (:id, :nome, :cor)`,  
             [
                 novo.id_barco,
                 novo.nome,
