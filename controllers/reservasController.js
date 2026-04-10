@@ -101,20 +101,35 @@ exports.listReservasByMarinheiro = async function (req, res) {
     try {   
         const connection = await db.connect();
         
-        var result = await connection.execute(
-            `SELECT * FROM RESERVAS WHERE ID_MARINHEIRO = :id_marinheiro`,
-            {id_marinheiro: req.params.id_marinheiro}
-        );
-        
-        if (!result.rows || result.rows.length === 0) {
-            return res.status(404).json({ error: "Nenhuma reserva encontrada para este marinheiro." });
-        }
-        
-        res.status(200).json(result.rows);
-    
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }   
+        const id = req.params.id_marinheiro;
+
+    const result = await connection.execute(
+       `SELECT 
+      r.ID_MARINHEIRO,
+      m.NOME AS NOME_MARINHEIRO,
+      r.ID_BARCO,
+      b.NOME AS NOME_BARCO,
+      b.COR,
+      r.DATA
+   FROM RESERVAS r
+   JOIN BARCOS b ON r.ID_BARCO = b.ID_BARCO
+   JOIN MARINHEIROS m ON r.ID_MARINHEIRO = m.ID_MARINHEIRO
+   WHERE r.ID_MARINHEIRO = :id
+   ORDER BY r.DATA`,
+      { id },
+      { outFormat: require('oracledb').OUT_FORMAT_OBJECT}
+    );
+
+    if (!result.rows || result.rows.length === 0) {
+      return res.status(404).json({ error: 'Nenhuma reserva encontrada.' });
+    }
+
+    res.status(200).json(result.rows);
+
+  } catch (err) {
+    console.log('ERRO BACKEND:', err.message);
+    res.status(500).json({ error: err.message });
+  }
 };
 
 // US012 - Como Marinheiro - Cancelar Reserva Futura ( Requer ID do marinheiro, ID do barco e data futura )
