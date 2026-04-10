@@ -137,43 +137,62 @@ exports.listReservasByMarinheiro = async function (req, res) {
 exports.cancelReserva = async function (req, res) {
     try {
         const connection = await db.connect();
-        const params = {
-            id_marinheiro: req.body.id_marinheiro,
-            id_barco: req.body.id_barco,
-            data: new Date(req.body.data)
-        };
+        
+        let dataJS;
 
-         // 1. Verificar se a reserva existe e é futura
-        var reserva = await connection.execute(
-            `SELECT * FROM RESERVAS 
-             WHERE ID_MARINHEIRO = id_marinheiro
-             AND ID_BARCO = id_barco
-             AND TRUNC(DATA) = TRUNC(:data)
-             AND DATA > SYSDATE`, 
-             params
-        );
-
-        if (!reserva.rows || reserva.rows.length === 0)
-            return res.status(404).json({ error: 'Reserva não encontrada ou não é futura.' });
-
-        // 2. Eliminar reserva
-        var result = await connection.execute(
-            `DELETE FROM RESERVAS 
-             WHERE ID_MARINHEIRO = :id_marinheiro
-             AND ID_BARCO = :id_barco
-             AND TRUNC(DATA) = TRUNC(:data)
-             AND DATA > SYSDATE`,
-             params,
-            
-            { autoCommit: true }
-        );
-
-        if (result.rowsAffected !== 1)
-            return res.status(404).json({ error: 'Erro ao eliminar reserva.' });
-
-        res.json({ message: 'Reserva cancelada com sucesso.' });
-
-    } catch (err) {
-        res.status(500).json({ error: err.message });
+    if (req.body.data.includes('-')) {
+      dataJS = new Date(req.body.data);
+    } else if (req.body.data.includes('/')) {
+      const [dia, mes, ano] = req.body.data.split('/');
+      dataJS = new Date(`${ano}-${mes}-${dia}`);
+    } else {
+      return res.status(400).json({ error: 'Formato de data inválido.' });
     }
+
+    const params = {
+      id_marinheiro: req.body.id_marinheiro,
+      id_barco: req.body.id_barco,
+      data: dataJS
+    };
+
+    // 1. Verificar se a reserva existe e é futura
+    const reserva = await connection.execute(
+      `SELECT 1 FROM RESERVAS 
+       WHERE ID_MARINHEIRO = :id_marinheiro
+       AND ID_BARCO = :id_barco
+       AND TRUNC(DATA) = TRUNC(:data)
+       AND DATA > SYSDATE`,
+      params
+    );
+
+    if (!reserva.rows || reserva.rows.length === 0) {
+      return res.status(404).json({ error: 'Reserva não encontrada ou não é futura.' });
+    }
+
+    // 2. Eliminar reserva
+    const result = await connection.execute(
+      `DELETE FROM RESERVAS 
+       WHERE ID_MARINHEIRO = :id_marinheiro
+       AND ID_BARCO = :id_barco
+       AND TRUNC(DATA) = TRUNC(:data)
+       AND DATA > SYSDATE`,
+      params,
+      { autoCommit: true }
+    );
+
+    if (result.rowsAffected !== 1) {
+      return res.status(400).json({ error: 'Erro ao eliminar reserva.' });
+    }
+
+    res.json({ message: 'Reserva cancelada com sucesso.' });
+
+  } catch (err) {
+    console.log('ERRO BACKEND:', err.message);
+
+    if (err.message.includes('ORA-00001')) {
+      return res.status(400).json({ error: 'Erro de integridade.' });
+    }
+
+    res.status(500).json({ error: err.message });
+  }
 };
