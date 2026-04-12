@@ -33,7 +33,9 @@ app.get(/.*/, (req, res) => {
 
 // Server ================================================
 var port = 8080;
-app.listen(port);
+app.listen(port, '0.0.0.0', () => { // adicionei isto para conseguir ver no tablet como "monitor externo"
+console.log('Servidor a correr na porta ' + port);
+});
 console.log('\nUsing port ' + port);
 
 
