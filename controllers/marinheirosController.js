@@ -6,29 +6,56 @@ const Marinheiro = require('../models/marinheiro');
 exports.createMarinheiro = async function (req, res) {
     try {
         const connection = await db.connect();
-        
-        var novo = new Marinheiro(
-            req.body.id_marinheiro,
-            req.body.nome,
-            req.body.classificacao,
-            req.body.idade
-        );
-        
-        var result = await connection.execute(
+
+        const { id_marinheiro, nome, classificacao, idade } = req.body;
+
+        // === VALIDAÇÕES ===
+
+        // ID - inteiro obrigatório
+        if (!Number.isInteger(id_marinheiro)) {
+            return res.status(400).json({ error: "ID do marinheiro deve ser um inteiro." });
+        }
+
+        // Nome - string até 30 chars
+        const nomeRegex = /^[A-Za-zÀ-ÿ\s]+$/;
+
+        if (typeof nome !== "string" || nome.length === 0 || nome.length > 30 || !nomeRegex.test(nome)) {
+            return res.status(400).json({ error: "Nome deve conter apenas letras e espaços (máx. 30 caracteres)." });
+        }
+
+        // Classificação - inteiro entre 1 e 10
+        if (!Number.isInteger(classificacao) || classificacao < 1 || classificacao > 10) {
+            return res.status(400).json({ error: "Classificação deve ser um inteiro entre 1 e 10." });
+        }
+
+        // Idade - inteiro entre 1 e 100
+        if (!Number.isInteger(idade) || idade < 1 || idade > 100) {
+            return res.status(400).json({ error: "Idade deve ser um inteiro entre 1 e 100." });
+        }
+
+        // === INSERT ===
+
+        await connection.execute(
             `INSERT INTO MARINHEIROS (ID_MARINHEIRO, NOME, CLASSIFICACAO, IDADE)
              VALUES (:id, :nome, :classificacao, :idade)`,
-            [
-                novo.id_marinheiro,
-                novo.nome,
-                novo.classificacao,
-                novo.idade
-            ],
+            {
+                id: id_marinheiro,
+                nome: nome,
+                classificacao: classificacao,
+                idade: idade
+            },
             { autoCommit: true }
         );
 
         res.status(201).json({ message: "Marinheiro criado com sucesso." });
 
     } catch (err) {
+
+        // === ERRO DE CHAVE DUPLICADA (Oracle) ===
+        if (err.errorNum === 1) {
+            return res.status(400).json({ error: "Já existe um marinheiro com esse ID." });
+        }
+
         res.status(500).json({ error: err.message });
     }
 };
@@ -100,7 +127,24 @@ exports.getMarinheiroById = async function (req, res) {
 exports.updateMarinheiroClassificacao = async function (req, res) {
     try {
         const connection = await db.connect();
-        
+
+        const id = Number(req.params.id);
+        const classificacao = Number(req.body.classificacao);
+
+        // Valida ID
+        if (!Number.isInteger(id)) {
+            return res.status(400).json({
+                error: "ID inválido."
+            });
+        }
+
+        // Valida classificação
+        if (!Number.isInteger(classificacao) || classificacao < 1 || classificacao > 10) {
+            return res.status(400).json({
+                error: "Classificação deve ser um inteiro entre 1 e 10."
+            });
+        }     
+
         var result = await connection.execute(
             `UPDATE MARINHEIROS SET CLASSIFICACAO = :classificacao WHERE ID_MARINHEIRO = :id`,
             {classificacao: req.body.classificacao, id: req.params.id},
