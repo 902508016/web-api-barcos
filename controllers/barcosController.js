@@ -13,6 +13,32 @@ exports.createBarco = async function (req, res) {
             req.body.cor
         );
 
+        // === VALIDAÇÕES ===
+
+        // ID - inteiro
+        const idNum = Number(novo.id_barco);
+        if (!Number.isInteger(idNum)) {
+            return res.status(400).json({ error: "ID do barco deve ser um inteiro." });
+        }
+
+        // Nome - varchar(20)
+        if (
+            typeof novo.nome !== "string" ||
+            novo.nome.length === 0 ||
+            novo.nome.length > 20
+        ) {
+            return res.status(400).json({ error: "Nome deve ter no máximo 20 caracteres." });
+        }
+
+        // Cor - varchar(10)
+        if (
+            typeof novo.cor !== "string" ||
+            novo.cor.length === 0 ||
+            novo.cor.length > 10
+        ) {
+            return res.status(400).json({ error: "Cor deve ter no máximo 10 caracteres." });
+        }
+
         var result = await connection.execute(
             `INSERT INTO BARCOS (ID_BARCO, NOME, COR)
              VALUES (:id, :nome, :cor)`,  
@@ -31,6 +57,11 @@ exports.createBarco = async function (req, res) {
         res.status(201).json({ message: "Barco criado com sucesso." });
 
     } catch (err) {
+
+        if (err.errorNum === 1) {
+            return res.status(400).json({ error: "Já existe um barco com esse ID." });
+        }
+
         res.status(500).json({ error: err.message });
     }       
 };
