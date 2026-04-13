@@ -105,3 +105,49 @@ exports.getBarcosDisponiveis = async function (req, res) {
         res.status(500).json({ error: err.message });
     }
 };
+
+// Eliminar Barco
+
+exports.deleteBarco = async function (req, res) {
+  try {
+    const { id } = req.params
+    const connection = await db.connect()
+
+    // 1. Verificar se o barco existe
+    const existe = await connection.execute(
+      `SELECT 1 FROM BARCOS WHERE ID_BARCO = :id`,
+      [id]
+    )
+
+    if (existe.rows.length === 0) {
+      return res.status(404).json({
+        error: 'Barco não existe.'
+      })
+    }
+
+    // 2. Verificar se tem reservas
+    const reservas = await connection.execute(
+      `SELECT 1 FROM RESERVAS WHERE ID_BARCO = :id`,
+      [id]
+    )
+
+    if (reservas.rows.length > 0) {
+      return res.status(400).json({
+        error: 'Barco tem reservas associadas.'
+      })
+    }
+
+    // 3. Eliminar
+    await connection.execute(
+      `DELETE FROM BARCOS WHERE ID_BARCO = :id`,
+      [id],
+      { autoCommit: true }
+    )
+
+    res.json({ message: 'Barco eliminado com sucesso.' })
+
+  } catch (err) {
+    res.status(500).json({ error: err.message })
+  }
+}
+
