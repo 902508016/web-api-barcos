@@ -18,6 +18,7 @@ router.post('/',
 
 // US011 - Como Marinheiro - Listar Barcos por mim Registados
 router.get('/marinheiro/:id_marinheiro', ctr.listReservasByMarinheiro);
+router.get('/barco/:id_barco', ctr.listReservasByBarco);
 
 // US012 - Como Marinheiro - Cancelar Reserva Futura ( Requer ID do marinheiro, ID do barco e data futura )
 router.delete('/',
@@ -29,5 +30,8 @@ router.delete('/',
         })
     }), ctr.cancelReserva
 );
+
+// Listar todas as reservas
+router.get('/', ctr.listAllReservas);
 
 module.exports = router;

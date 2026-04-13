@@ -132,6 +132,41 @@ exports.listReservasByMarinheiro = async function (req, res) {
   }
 };
 
+// US011 - Listar Reservas por Barco (NOVO)
+
+exports.listReservasByBarco = async function (req, res) {
+  try {
+    const connection = await db.connect();
+    const id = req.params.id_barco;
+
+    const result = await connection.execute(
+      `SELECT 
+        r.ID_BARCO,
+        b.NOME AS NOME_BARCO,
+        r.ID_MARINHEIRO,
+        m.NOME AS NOME_MARINHEIRO,
+        r.DATA
+      FROM RESERVAS r
+      JOIN BARCOS b ON r.ID_BARCO = b.ID_BARCO
+      JOIN MARINHEIROS m ON r.ID_MARINHEIRO = m.ID_MARINHEIRO
+      WHERE r.ID_BARCO = :id
+      ORDER BY r.DATA`,
+      { id },
+      { outFormat: require('oracledb').OUT_FORMAT_OBJECT }
+    );
+
+    if (!result.rows || result.rows.length === 0) {
+      return res.status(404).json({ error: 'Nenhuma reserva encontrada.' });
+    }
+
+    res.status(200).json(result.rows);
+
+  } catch (err) {
+    console.log('ERRO BACKEND:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+};
+
 // US012 - Como Marinheiro - Cancelar Reserva Futura ( Requer ID do marinheiro, ID do barco e data futura )
 
 exports.cancelReserva = async function (req, res) {
@@ -193,6 +228,36 @@ exports.cancelReserva = async function (req, res) {
       return res.status(400).json({ error: 'Erro de integridade.' });
     }
 
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// Listar Todas as Reservas (NOVO)
+
+exports.listAllReservas = async function (req, res) {
+  try {
+    const connection = await db.connect();
+
+    const result = await connection.execute(
+      `SELECT 
+        r.DATA,
+        r.ID_BARCO,
+        b.NOME AS NOME_BARCO,
+        b.COR,
+        r.ID_MARINHEIRO,
+        m.NOME AS NOME_MARINHEIRO
+      FROM RESERVAS r
+      JOIN BARCOS b ON r.ID_BARCO = b.ID_BARCO
+      JOIN MARINHEIROS m ON r.ID_MARINHEIRO = m.ID_MARINHEIRO
+      ORDER BY r.DATA DESC`,
+      {},
+      { outFormat: require('oracledb').OUT_FORMAT_OBJECT }
+    );
+
+    res.status(200).json(result.rows);
+
+  } catch (err) {
+    console.log('ERRO BACKEND:', err.message);
     res.status(500).json({ error: err.message });
   }
 };
