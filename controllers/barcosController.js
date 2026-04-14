@@ -72,14 +72,13 @@ exports.getAllBarcos = async function (req, res) {
     try {
         const connection = await db.connect();
 
-        var result = await connection.execute(
-            `SELECT * FROM BARCOS`
+        const result = await connection.execute(
+            `SELECT * FROM BARCOS`,
+            {},
+            { outFormat: require('oracledb').OUT_FORMAT_OBJECT }
         );
-        
-        if (!result.rows || result.rows.length === 0)
-            return res.status(404).json({ error: 'Nenhum barco encontrado.' });
-        
-        res.json(result.rows);
+
+        res.status(200).json(result.rows);
 
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -91,15 +90,27 @@ exports.getAllBarcos = async function (req, res) {
 exports.getBarcosDisponiveis = async function (req, res) {
     try {
         const connection = await db.connect();
-        
-        var result = await connection.execute(
-            `SELECT * FROM BARCOS WHERE ID_BARCO NOT IN (SELECT ID_BARCO FROM RESERVAS)`
+
+        const data = req.query.data;
+
+        if (!data) {
+            return res.status(400).json({ error: 'Data é obrigatória.' });
+        }
+
+        const result = await connection.execute(
+            `SELECT *
+             FROM BARCOS b
+             WHERE NOT EXISTS (
+                SELECT 1
+                FROM RESERVAS r
+                WHERE r.ID_BARCO = b.ID_BARCO
+                AND TRUNC(r.DATA) = TO_DATE(:data, 'YYYY-MM-DD')
+             )`,
+            { data },
+            { outFormat: require('oracledb').OUT_FORMAT_OBJECT }
         );
-        
-        if (!result.rows || result.rows.length === 0)
-            return res.status(404).json({ error: 'Nenhum barco disponível encontrado.' });
-        
-        res.json(result.rows);
+
+        res.status(200).json(result.rows);
 
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -150,4 +161,3 @@ exports.deleteBarco = async function (req, res) {
     res.status(500).json({ error: err.message })
   }
 }
-
