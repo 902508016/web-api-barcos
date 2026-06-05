@@ -135,4 +135,4 @@ ________________________________________________________________________________
 
 ## Autor
 
-Catarina Soares - 902508016 | UP25T08 – Desenvolvimento Web – PL/SQL
+Catarina Soares | UP25T08 – Desenvolvimento Web – PL/SQL
